@@ -15,7 +15,7 @@ public:
 	int height(BST *);
 	int find_min(BST *);
 
-	void BST_delete(BST *temp_root,int data);
+	BST* BST_delete(BST *temp_root,int data);
 };
 void BST::insert_BST(int x)
 {
@@ -107,35 +107,43 @@ int BST::find_min(BST *temp)
 	}
 	return temp->data;
 }
-void BST::BST_delete(BST *temp_root,int data)
+BST* BST::BST_delete(BST *temp_root,int data)
 {
 		BST *temp1;
 		
 		if(temp_root==NULL)
 		{
-			return ;
+			return NULL;
 		}
 		if(data <temp_root->data)
 		{
-			BST_delete(temp_root->left,data);
+			temp_root->left=BST_delete(temp_root->left,data);
 		}
 		else if(temp_root->data<data)
 		{
-			BST_delete(temp_root->right,data);
-		}
-		else if(temp_root->left!=NULL && temp_root->right!=NULL)
-		{
-			temp_root->data=find_min(temp_root->right);
-			BST_delete(temp_root->right,temp_root->data);
-			
+			temp_root->right=BST_delete(temp_root->right,data);
 		}
 		else 
 		{
-			BST *oldnode=temp_root;
-			temp_root=(temp_root->left!=NULL)?temp_root->left:temp_root->right;
-			delete oldnode;
+
+			if(temp_root->left && temp_root->right)
+			{
+				BST *min_node=temp_root->right;
+				while(min_node->left!=NULL)
+				{
+					min_node=min_node->left;
+				}	
+				temp_root->data=min_node->data;
+				temp_root->right=BST_delete(temp_root->right,min_node->data);
+			}
+			else 
+			{	
+				BST *oldnode=temp_root;
+				temp_root=(temp_root->right)?temp_root->right:temp_root->left;
+				delete oldnode;
+			}	
+			
 		}
-		
 }
 
 int main()
@@ -180,11 +188,12 @@ int main()
 	cout<<"enter number to be deleted"<<endl;
 	cin>>num;
 	cout<<endl;
-	obj.BST_delete(obj.root,num);
-	
-		
-		obj.inorder(obj.root);
-		cout<<endl;
+	if(obj.BST_delete(obj.root,num))
+	{
+		cout<<"Deleted"<<endl;
+	}
+	obj.inorder(obj.root);
+	cout<<endl;
 	
 	
 	return 0;
