@@ -14,8 +14,11 @@ public:
 	bool is_BST(BST *,int min,int max);
 	int height(BST *);
 	int find_min(BST *);
-
+//	stack<int>stck;
+//	queue<BST *>q;
 	BST* BST_delete(BST *temp_root,int data);
+	void inorder_iterative(BST *);
+//	void level_order(BST *);ERROR DEF:
 };
 void BST::insert_BST(int x)
 {
@@ -107,7 +110,7 @@ int BST::find_min(BST *temp)
 	}
 	return temp->data;
 }
-BST* BST::BST_delete(BST *temp_root,int data)
+BST* BST::BST_delete(BST *temp_root,int x)
 {
 		BST *temp1;
 		
@@ -115,13 +118,13 @@ BST* BST::BST_delete(BST *temp_root,int data)
 		{
 			return NULL;
 		}
-		if(data <temp_root->data)
+		if(temp_root->data > x)
 		{
-			temp_root->left=BST_delete(temp_root->left,data);
+			temp_root->left=BST_delete(temp_root->left,x);
 		}
-		else if(temp_root->data<data)
+		else if(temp_root->data< x)
 		{
-			temp_root->right=BST_delete(temp_root->right,data);
+			temp_root->right=BST_delete(temp_root->right,x);
 		}
 		else 
 		{
@@ -139,13 +142,32 @@ BST* BST::BST_delete(BST *temp_root,int data)
 			else 
 			{	
 				BST *oldnode=temp_root;
-				temp_root=(temp_root->right)?temp_root->right:temp_root->left;
+				temp_root=( (temp_root->right)? temp_root->right:temp_root->left);
 				delete oldnode;
 			}	
-			
+		
 		}
+		return temp_root;		
 }
-
+//ERROR! FIND BUG
+/*void BST::level_order(BST *root1)
+{
+	q.push(root1);
+	while(!q.empty())
+	{
+		cout<<(q.front()->data)<<"\t";
+		root1=q.front();
+		q.pop();
+		if(root1->left)
+		{
+			q.push(root1->left);
+		}
+		if(root1->right)
+		{
+			q.push(root1->right);	
+		}
+	}
+}*/
 int main()
 {
 	BST obj;
@@ -188,13 +210,12 @@ int main()
 	cout<<"enter number to be deleted"<<endl;
 	cin>>num;
 	cout<<endl;
-	if(obj.BST_delete(obj.root,num))
-	{
-		cout<<"Deleted"<<endl;
-	}
+	obj.BST_delete(obj.root,num);
+	
+	cout<<"Deleted"<<endl;
 	obj.inorder(obj.root);
 	cout<<endl;
-	
+//	obj.level_order(obj.root); ERROR CALL
 	
 	return 0;
 }
